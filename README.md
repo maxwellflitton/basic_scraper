@@ -1,6 +1,11 @@
 # basic_scraper
 basic web scraper written in python. 
 
+## install using pip
+```
+pip install git+https://github.com/maxwellflitton/basic_scraper.git#egg=basic_scraper
+```
+
 ## Use
 Use directly by using the ```BasicWorker``` object:
 
