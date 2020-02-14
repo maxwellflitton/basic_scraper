@@ -18,5 +18,18 @@ labels = example.word_filter(tag_type="span", class_name="product-card__title-in
 image_data = example.image_filter(tag_type="img", class_name="product-card__image")
 ```
 
+## Threaded
+There's a threaded support for getting image data. It roughly halves the time it takes 
+to complete:
 
+threaded: 0.2209627628326416
+
+sequential: 0.49100375175476074
+
+```python
+from basic_scaper.worker import BasicWorker
+
+example = BasicWorker(url="https://www.johnlewis.com/browse/men/mens-t-shirts/_/N-ebg")
+image_data = example.threaded_image_filter(tag_type="img", class_name="product-card__image")
+```
 

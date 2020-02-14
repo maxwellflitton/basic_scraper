@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from typing import Union, List
 import requests
 
+from basic_thread import BasicImageThread
+
 
 class BasicWorker:
     """
@@ -92,3 +94,27 @@ class BasicWorker:
             result = requests.get(image_url, stream=True)
             results.append(result.content)
         return results
+
+    def threaded_image_filter(self, tag_type: str, class_name: str) -> List[bytes]:
+        """
+        Gets raw image data based on tag and class name (multi-threaded).
+
+        :param tag_type: (str) tag identified such as 'div', 'span' etc
+        :param class_name: (str) name of the class for the filter to act on
+        :return: (list[bytes]) image data from the filter
+        """
+        if self.parsed_data is None:
+            self.parse_html()
+
+        urls = [i.get("src") for i in self.parsed_data.findAll(tag_type, {"class": class_name})]
+        threads = []
+        for url in urls:
+            url = self.process_url(url_string=url)
+            temp_thread = BasicImageThread(url=url)
+            temp_thread.start()
+            threads.append(temp_thread)
+
+        for thread in threads:
+            thread.join()
+
+        return [i.result for i in threads]

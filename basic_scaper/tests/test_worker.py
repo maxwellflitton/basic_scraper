@@ -79,6 +79,24 @@ class TestWorker(TestCase):
                           mock_requests.get.return_value.content,
                           mock_requests.get.return_value.content], out_come)
 
+    @patch("basic_scaper.worker.BasicImageThread")
+    @patch("basic_scaper.worker.BasicWorker.process_url")
+    def test_threaded_image_filter(self, mock_process_url, mock_thread):
+        one = {"src": "one"}
+        two = {"src": "two"}
+        three = {"src": "three"}
+        self.test.parsed_data = MagicMock()
+        self.test.parsed_data.findAll.return_value = [one, two, three]
+
+        out_come = self.test.threaded_image_filter(tag_type="test tag", class_name="test name")
+        self.assertEqual(3, len(mock_process_url.call_args_list))
+        self.assertEqual(3, len(mock_thread.call_args_list))
+        self.assertEqual(3, len(mock_thread.return_value.start.call_args_list))
+        self.assertEqual(3, len(mock_thread.return_value.join.call_args_list))
+
+        result = mock_thread.return_value.result
+        self.assertEqual([result, result, result], out_come)
+
 
 if __name__ == "__main__":
     main()
