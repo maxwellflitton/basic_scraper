@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from typing import Union, List
 import requests
 
-from basic_thread import BasicImageThread
+from .basic_thread import BasicImageThread
 
 
 class BasicWorker:
